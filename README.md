@@ -90,6 +90,8 @@ La imagen se ejecuta con el usuario sin privilegios `node`.
 
 ## Reportes
 
+![Reporte HTML de Playwright](docs/images/reporte-html.png)
+
 `npm run report` abre el reporte HTML. Cada test muestra sus tags, la anotación del defecto cuando
 corresponde y la semilla de Faker que usó. Cuando un test falla, se adjuntan todas sus requests y
 respuestas en `api-exchanges.json`, con contraseñas, tokens, cookies y campos similares ocultos. El
