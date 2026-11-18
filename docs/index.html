@@ -207,6 +207,96 @@
         color: var(--muted);
       }
 
+      .explain {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+
+      .explain-card {
+        padding: 24px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--panel);
+      }
+
+      .explain-card h3 {
+        margin: 0 0 12px;
+        font-size: 20px;
+        color: var(--green);
+      }
+
+      .explain-card p,
+      .explain-card li {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      .explain-card p:last-child,
+      .explain-card li:last-child {
+        margin-bottom: 0;
+      }
+
+      .explain-card strong {
+        color: var(--text);
+      }
+
+      .explain-card ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .analogy {
+        margin: 20px 0 0;
+        padding: 20px 24px;
+        border-left: 4px solid var(--green);
+        border-radius: 0 12px 12px 0;
+        background: rgba(63, 185, 80, 0.07);
+        font-size: 18px;
+      }
+
+      .analogy span {
+        color: var(--green);
+        font-weight: 700;
+      }
+
+      .glossary {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px 32px;
+        margin: 32px 0 0;
+      }
+
+      .glossary dt {
+        font-weight: 700;
+      }
+
+      .glossary dd {
+        margin: 2px 0 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin: 72px 0 0;
+        color: var(--muted);
+        font: 600 13px var(--mono);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -403,7 +493,9 @@
           font-size: 18px;
         }
 
-        .stats {
+        .stats,
+        .explain,
+        .glossary {
           grid-template-columns: 1fr;
         }
 
@@ -419,8 +511,8 @@
       <div class="eyebrow">QA Automation · Portafolio</div>
       <h1>API Test Automation Suite</h1>
       <p class="lead">
-        80 pruebas automatizadas que verifican una API REST real: CRUD, paginación, contratos de
-        respuesta y autenticación con JWT. Se ejecutan solas en GitHub Actions y en Docker.
+        Un sistema que revisa automáticamente que una aplicación funcione bien, en segundos y sin
+        que una persona tenga que probarla a mano.
       </p>
       <div class="actions">
         <a class="btn primary" href="https://github.com/inostroza-Daniela/api-test-automation-suite"
@@ -445,10 +537,81 @@
       </div>
 
       <div class="stats">
-        <div class="stat"><strong>80</strong><span>tests automatizados</span></div>
-        <div class="stat"><strong>4</strong><span>defectos reales encontrados</span></div>
-        <div class="stat"><strong>3</strong><span>jobs en integración continua</span></div>
+        <div class="stat"><strong>80</strong><span>pruebas automáticas</span></div>
+        <div class="stat"><strong>4</strong><span>errores reales encontrados</span></div>
+        <div class="stat"><strong>20 s</strong><span>en revisar todo</span></div>
       </div>
+
+      <section id="en-simple">
+        <h2>Explicado en simple</h2>
+        <div class="explain">
+          <article class="explain-card">
+            <h3>¿Qué es?</h3>
+            <p>
+              Las aplicaciones que usamos todos los días, como la del banco, la de delivery o una
+              red social, piden información a un servidor: «muéstrame mis pedidos», «inicia mi
+              sesión». A esa conexión se le llama <strong>API</strong>.
+            </p>
+            <p>
+              Este proyecto es un programa que hace esas mismas peticiones de forma automática, en
+              80 situaciones distintas, y revisa que cada respuesta sea la correcta.
+            </p>
+          </article>
+          <article class="explain-card">
+            <h3>¿Para qué sirve?</h3>
+            <ul>
+              <li>
+                <strong>Encontrar errores antes que los usuarios.</strong> Si algo falla, se sabe
+                antes de que llegue a las personas.
+              </li>
+              <li>
+                <strong>Ahorrar tiempo.</strong> Lo que a una persona le tomaría una tarde probando
+                a mano, aquí toma 20 segundos.
+              </li>
+              <li>
+                <strong>Cambiar el código con confianza.</strong> Cada vez que alguien modifica
+                algo, las pruebas corren solas y avisan si se rompió.
+              </li>
+            </ul>
+          </article>
+          <article class="explain-card">
+            <h3>¿Qué encontró?</h3>
+            <p>
+              Al probar una API pública, encontró <strong>4 errores reales</strong>. El más
+              importante es de seguridad: en un sistema real permitiría modificar los datos de otra
+              persona cambiando un solo número.
+            </p>
+            <p>Los cuatro están en <a href="#defectos">Defectos encontrados</a>.</p>
+          </article>
+        </div>
+        <p class="analogy">
+          <span>Una forma de verlo:</span> es como el control de calidad de una fábrica, pero para
+          software. Revisa cada pieza antes de que llegue al cliente, siempre con la misma lista y
+          en segundos.
+        </p>
+        <dl class="glossary">
+          <div>
+            <dt>API</dt>
+            <dd>La conexión por la que una aplicación pide y recibe información de un servidor.</dd>
+          </div>
+          <div>
+            <dt>Prueba automatizada (test)</dt>
+            <dd>Un pequeño programa que verifica que algo funcione como se espera.</dd>
+          </div>
+          <div>
+            <dt>Integración continua (CI)</dt>
+            <dd>
+              Las pruebas se ejecutan solas cada vez que cambia el código y todos los días hábiles.
+            </dd>
+          </div>
+          <div>
+            <dt>Defecto (bug)</dt>
+            <dd>Un error: la aplicación responde algo distinto a lo que debería.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <div class="divider"><span>Detalle técnico</span></div>
 
       <section>
         <h2>Qué verifica</h2>
@@ -486,7 +649,7 @@
         </div>
       </section>
 
-      <section>
+      <section id="defectos">
         <h2>Defectos encontrados</h2>
         <p class="section-lead">
           Cada defecto quedó documentado con un test marcado con <code>test.fail()</code>: pasa
