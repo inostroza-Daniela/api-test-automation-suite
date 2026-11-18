@@ -161,3 +161,10 @@ API.
 ## Licencia
 
 [MIT](LICENSE) © 2026 Daniela Inostroza Mancilla
+
+## Contacto
+
+**Daniela Inostroza Mancilla** · QA Automation · Ciberseguridad
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-daniela--inostrozam-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/daniela-inostrozam/)
+[![GitHub](https://img.shields.io/badge/GitHub-inostroza--Daniela-181717?logo=github&logoColor=white)](https://github.com/inostroza-Daniela)
