@@ -14,6 +14,13 @@ Elegí DummyJSON en vez de JSONPlaceholder o ReqRes porque no requiere API key y
 tokens real (access, refresh y sesión por cookies), además de respuestas 400/401/403/404 distintas
 contra las cuales probar.
 
+## Video
+
+[![Video explicativo del proyecto](docs/video/portada.png)](docs/video/video-explicativo.mp4)
+
+Recorrido de 1:17 por el proyecto: qué verifica, la arquitectura, un test por dentro, la suite
+corriendo en CI y el defecto de mass assignment que encontró.
+
 ## Defectos encontrados
 
 Cada defecto tiene un test marcado con `test.fail()` y el tag `@known-defect`. El test pasa mientras
