@@ -34,6 +34,7 @@ export interface ApiExchange {
 
 export interface ApiClientOptions {
   maxRateLimitRetries?: number;
+  maxConnectionRetries?: number;
   maxRetryDelayMs?: number;
 }
 
@@ -45,16 +46,25 @@ export class ApiClientError extends Error {
 }
 
 const TOO_MANY_REQUESTS = 429;
+const IDEMPOTENT_METHODS: ReadonlySet<HttpMethod> = new Set(['GET', 'PUT', 'DELETE']);
+const TRANSIENT_CONNECTION_ERROR = /ECONNRESET|ETIMEDOUT|EPIPE|socket hang up/i;
+
+const isRetryableConnectionError = (method: HttpMethod, error: unknown): boolean =>
+  IDEMPOTENT_METHODS.has(method) &&
+  error instanceof Error &&
+  TRANSIENT_CONNECTION_ERROR.test(error.message);
 
 export class ApiClient {
   readonly #request: APIRequestContext;
   readonly #history: ApiExchange[] = [];
   readonly #maxRateLimitRetries: number;
+  readonly #maxConnectionRetries: number;
   readonly #maxRetryDelayMs: number;
 
   constructor(request: APIRequestContext, options: ApiClientOptions = {}) {
     this.#request = request;
     this.#maxRateLimitRetries = options.maxRateLimitRetries ?? 3;
+    this.#maxConnectionRetries = options.maxConnectionRetries ?? 2;
     this.#maxRetryDelayMs = options.maxRetryDelayMs ?? 15_000;
   }
 
@@ -83,13 +93,42 @@ export class ApiClient {
   }
 
   async send(method: HttpMethod, path: string, options: RequestOptions = {}): Promise<ApiResponse> {
+    let rateLimitRetries = 0;
+    let connectionRetries = 0;
+
     for (let attempt = 1; ; attempt += 1) {
       const startedAt = performance.now();
-      const response = await this.#fetch(method, path, options);
+      let response: APIResponse;
+
+      try {
+        response = await this.#request.fetch(path, {
+          method,
+          params: options.params,
+          data: options.data,
+          headers: options.headers,
+          failOnStatusCode: false,
+        });
+      } catch (error) {
+        if (
+          connectionRetries < this.#maxConnectionRetries &&
+          isRetryableConnectionError(method, error)
+        ) {
+          connectionRetries += 1;
+          await sleep(this.#backoff(connectionRetries));
+          continue;
+        }
+
+        throw new ApiClientError(
+          `${method} ${path} falló antes de recibir una respuesta (intento ${attempt})`,
+          { cause: error },
+        );
+      }
+
       const durationMs = Math.round(performance.now() - startedAt);
 
-      if (response.status() === TOO_MANY_REQUESTS && attempt <= this.#maxRateLimitRetries) {
-        await sleep(this.#retryDelay(response.headers(), attempt));
+      if (response.status() === TOO_MANY_REQUESTS && rateLimitRetries < this.#maxRateLimitRetries) {
+        rateLimitRetries += 1;
+        await sleep(this.#rateLimitDelay(response.headers(), rateLimitRetries));
         continue;
       }
 
@@ -109,27 +148,15 @@ export class ApiClient {
     }
   }
 
-  async #fetch(method: HttpMethod, path: string, options: RequestOptions): Promise<APIResponse> {
-    try {
-      return await this.#request.fetch(path, {
-        method,
-        params: options.params,
-        data: options.data,
-        headers: options.headers,
-        failOnStatusCode: false,
-      });
-    } catch (error) {
-      throw new ApiClientError(`${method} ${path} falló antes de recibir una respuesta`, {
-        cause: error,
-      });
-    }
+  #backoff(retry: number): number {
+    return Math.min(500 * 2 ** (retry - 1), this.#maxRetryDelayMs);
   }
 
-  #retryDelay(headers: Record<string, string>, attempt: number): number {
+  #rateLimitDelay(headers: Record<string, string>, retry: number): number {
     const retryAfterSeconds = Number(headers['retry-after']);
     const resetEpochSeconds = Number(headers['x-ratelimit-reset']);
 
-    let delayMs = 1_000 * 2 ** (attempt - 1);
+    let delayMs = this.#backoff(retry);
 
     if (Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0) {
       delayMs = retryAfterSeconds * 1_000;

@@ -107,7 +107,7 @@ services/                Una clase por recurso, el único lugar que conoce los e
 tests/auth/              Login, claims del token, cookies, sesión y refresh
 tests/posts/             Listado, filtros, búsqueda, creación, actualización y eliminación
 tests/users/             Listado, paginación, ordenamiento, creación, actualización y eliminación
-utils/api-client.ts      Cliente HTTP con manejo de 429 e historial de requests
+utils/api-client.ts      Cliente HTTP con reintentos (429 y cortes de conexión) e historial
 utils/assertions.ts      Aserciones de status, schema, paginación, orden y cookies
 utils/test-data.ts       Factories y casos data-driven
 ```
@@ -125,6 +125,9 @@ utils/test-data.ts       Factories y casos data-driven
   historial de requests.
 - DummyJSON permite 100 requests cada 10 segundos. Ante un `429`, el cliente espera lo que indica
   `Retry-After`, con un límite de reintentos, en vez de agregar pausas fijas.
+- Los cortes de conexión transitorios (`ECONNRESET`, timeouts) se reintentan con backoff solo en
+  métodos idempotentes (`GET`, `PUT`, `DELETE`). Un `POST` o `PATCH` cortado falla de inmediato,
+  porque reintentarlo podría duplicar el efecto.
 
 ## Limitaciones de la API
 
