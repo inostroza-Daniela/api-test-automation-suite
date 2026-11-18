@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>API Test Automation Suite · Daniela Inostroza Mancilla</title>
+    <meta
+      name="description"
+      content="Suite de pruebas automatizadas de API REST con Playwright y TypeScript: 80 tests, contratos con Zod, autenticación JWT, CI en GitHub Actions y 4 defectos reales encontrados."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="API Test Automation Suite" />
+    <meta
+      property="og:description"
+      content="80 tests automatizados con Playwright y TypeScript sobre una API REST real. Contratos con Zod, JWT, CI en GitHub Actions y 4 defectos encontrados."
+    />
+    <meta
+      property="og:url"
+      content="https://inostroza-daniela.github.io/api-test-automation-suite/"
+    />
+    <meta
+      property="og:image"
+      content="https://inostroza-daniela.github.io/api-test-automation-suite/video/portada.png"
+    />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="720" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0d1117;
+        --panel: #161b22;
+        --panel-2: #1c2128;
+        --border: #30363d;
+        --text: #e6edf3;
+        --muted: #8b949e;
+        --green: #3fb950;
+        --blue: #58a6ff;
+        --purple: #bc8cff;
+        --amber: #d29922;
+        --red: #f85149;
+        --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font:
+          17px/1.6 Inter,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      a {
+        color: var(--blue);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .wrap {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      header.wrap {
+        padding: 72px 24px 40px;
+      }
+
+      .eyebrow {
+        font: 600 14px/1 var(--mono);
+        letter-spacing: 0.12em;
+        color: var(--green);
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 18px 0 12px;
+        font-size: clamp(36px, 6vw, 60px);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        font-weight: 800;
+      }
+
+      .lead {
+        margin: 0;
+        max-width: 720px;
+        font-size: 20px;
+        color: var(--muted);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        margin-top: 32px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      .btn:hover {
+        border-color: var(--muted);
+        text-decoration: none;
+      }
+
+      .btn.primary {
+        background: var(--green);
+        border-color: var(--green);
+        color: #04260d;
+      }
+
+      .btn.primary:hover {
+        filter: brightness(1.08);
+      }
+
+      .badge {
+        height: 20px;
+        margin-left: 4px;
+      }
+
+      .video {
+        margin: 8px 0 0;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        overflow: hidden;
+        background: #000;
+        aspect-ratio: 16 / 9;
+      }
+
+      .video video {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      section {
+        padding: 56px 0 8px;
+      }
+
+      h2 {
+        margin: 0 0 8px;
+        font-size: 28px;
+        letter-spacing: -0.01em;
+      }
+
+      .section-lead {
+        margin: 0 0 28px;
+        color: var(--muted);
+        max-width: 720px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 40px;
+      }
+
+      .stat {
+        padding: 22px 24px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--panel);
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 44px;
+        line-height: 1;
+        color: var(--green);
+        font-weight: 800;
+      }
+
+      .stat span {
+        color: var(--muted);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 14px;
+      }
+
+      .card {
+        position: relative;
+        padding: 22px 20px 20px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: var(--panel);
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: '';
+        position: absolute;
+        inset: 0 0 auto;
+        height: 4px;
+        background: var(--accent, var(--green));
+      }
+
+      .card h3 {
+        margin: 0 0 6px;
+        font-size: 18px;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .card code {
+        display: block;
+        margin-top: 14px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--accent, var(--green));
+        font: 13px/1.5 var(--mono);
+      }
+
+      .defects {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        font-size: 15px;
+      }
+
+      .defects th,
+      .defects td {
+        padding: 14px 18px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+
+      .defects th {
+        background: var(--panel-2);
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .defects td:first-child {
+        font: 600 14px var(--mono);
+        color: var(--amber);
+        white-space: nowrap;
+      }
+
+      .defects tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .table-scroll {
+        overflow-x: auto;
+      }
+
+      .callout {
+        margin-top: 20px;
+        padding: 20px 22px;
+        border: 1px solid var(--red);
+        border-radius: 12px;
+        background: rgba(248, 81, 73, 0.07);
+      }
+
+      .callout strong {
+        color: var(--text);
+      }
+
+      .callout p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .layers {
+        display: grid;
+        gap: 10px;
+      }
+
+      .layer {
+        display: grid;
+        grid-template-columns: 170px 1fr auto;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 20px;
+        border: 1px solid var(--accent);
+        border-radius: 12px;
+        background: var(--panel);
+      }
+
+      .layer b {
+        font: 600 16px var(--mono);
+        color: var(--accent);
+      }
+
+      .layer span {
+        color: var(--muted);
+        font: 14px var(--mono);
+      }
+
+      .layer em {
+        font-style: normal;
+        font-weight: 700;
+      }
+
+      .report {
+        display: block;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .report img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .chip {
+        padding: 6px 14px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--panel);
+        font-size: 15px;
+      }
+
+      footer {
+        margin-top: 72px;
+        padding: 32px 0 48px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      footer .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      footer strong {
+        color: var(--text);
+      }
+
+      footer nav {
+        display: flex;
+        gap: 18px;
+      }
+
+      @media (max-width: 720px) {
+        body {
+          font-size: 16px;
+        }
+
+        header.wrap {
+          padding: 48px 24px 28px;
+        }
+
+        .lead {
+          font-size: 18px;
+        }
+
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .layer {
+          grid-template-columns: 1fr;
+          gap: 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="wrap">
+      <div class="eyebrow">QA Automation · Portafolio</div>
+      <h1>API Test Automation Suite</h1>
+      <p class="lead">
+        80 pruebas automatizadas que verifican una API REST real: CRUD, paginación, contratos de
+        respuesta y autenticación con JWT. Se ejecutan solas en GitHub Actions y en Docker.
+      </p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/inostroza-Daniela/api-test-automation-suite"
+          >Ver el repositorio</a
+        >
+        <a class="btn" href="reporte/">Último reporte de tests</a>
+        <a
+          href="https://github.com/inostroza-Daniela/api-test-automation-suite/actions/workflows/api-tests.yml"
+          ><img
+            class="badge"
+            src="https://github.com/inostroza-Daniela/api-test-automation-suite/actions/workflows/api-tests.yml/badge.svg"
+            alt="Estado del CI"
+        /></a>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="video">
+        <video controls preload="metadata" playsinline poster="video/fotograma.png">
+          <source src="video/video-explicativo.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><strong>80</strong><span>tests automatizados</span></div>
+        <div class="stat"><strong>4</strong><span>defectos reales encontrados</span></div>
+        <div class="stat"><strong>3</strong><span>jobs en integración continua</span></div>
+      </div>
+
+      <section>
+        <h2>Qué verifica</h2>
+        <p class="section-lead">
+          La suite llama a los endpoints de <a href="https://dummyjson.com">DummyJSON</a> como lo
+          haría una aplicación real, con datos válidos e inválidos, y revisa cinco cosas en cada
+          respuesta.
+        </p>
+        <div class="grid">
+          <div class="card" style="--accent: var(--blue)">
+            <h3>Código de estado</h3>
+            <p>Que cada caso responda lo que corresponde.</p>
+            <code>404 si el usuario no existe</code>
+          </div>
+          <div class="card" style="--accent: var(--purple)">
+            <h3>Contrato</h3>
+            <p>Que los datos tengan la forma acordada.</p>
+            <code>schemas con Zod</code>
+          </div>
+          <div class="card" style="--accent: var(--green)">
+            <h3>Lógica</h3>
+            <p>Paginación, ordenamiento, búsqueda y filtros.</p>
+            <code>limit=10 → 10 resultados</code>
+          </div>
+          <div class="card" style="--accent: var(--amber)">
+            <h3>Errores</h3>
+            <p>Que los datos inválidos se rechacen bien.</p>
+            <code>sin contraseña → 400</code>
+          </div>
+          <div class="card" style="--accent: var(--red)">
+            <h3>Seguridad</h3>
+            <p>Tokens JWT, refresh y cookies seguras.</p>
+            <code>JWT alterado → rechazado</code>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Defectos encontrados</h2>
+        <p class="section-lead">
+          Cada defecto quedó documentado con un test marcado con <code>test.fail()</code>: pasa
+          mientras el defecto existe y avisa cuando la API lo corrige.
+        </p>
+        <div class="table-scroll">
+          <table class="defects">
+            <thead>
+              <tr>
+                <th>Endpoint</th>
+                <th>Esperado</th>
+                <th>Real</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PUT /users/:id</td>
+                <td>La respuesta describe al usuario de la ruta</td>
+                <td>Un <code>id</code> en el body reemplaza el de la ruta</td>
+              </tr>
+              <tr>
+                <td>GET /auth/me</td>
+                <td><code>401</code> con un JWT de firma alterada</td>
+                <td><code>500</code> con el error interno de la librería JWT</td>
+              </tr>
+              <tr>
+                <td>POST /auth/login</td>
+                <td><code>400</code> con un <code>expiresInMins</code> fuera de rango</td>
+                <td><code>500</code></td>
+              </tr>
+              <tr>
+                <td>PATCH /posts/:id</td>
+                <td>La respuesta mantiene todos los campos</td>
+                <td>Falta el campo <code>views</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout">
+          <p>
+            <strong>El primero es un caso de mass assignment</strong> (OWASP API Top 10). En un
+            backend real, cambiar un número en el body permitiría modificar un registro distinto al
+            de la URL, por ejemplo la cuenta de otra persona.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Cómo está construida</h2>
+        <p class="section-lead">
+          Arquitectura en capas: los tests describen qué probar y nunca conocen las URLs, así que un
+          cambio en la API se corrige en un solo lugar.
+        </p>
+        <div class="layers">
+          <div class="layer" style="--accent: var(--green)">
+            <b>tests/</b><span>PATCH cambia solo los campos enviados</span><em>Qué probar</em>
+          </div>
+          <div class="layer" style="--accent: var(--blue)">
+            <b>services/</b><span>users.update(37, cambios) → PATCH /users/37</span
+            ><em>A dónde ir</em>
+          </div>
+          <div class="layer" style="--accent: var(--purple)">
+            <b>api-client</b><span>reintentos · tiempos · historial de requests</span
+            ><em>Cómo enviarlo</em>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Reporte de la última ejecución</h2>
+        <p class="section-lead">
+          Se publica automáticamente después de cada ejecución del CI, incluida la diaria de lunes a
+          viernes.
+        </p>
+        <a class="report" href="reporte/">
+          <img
+            src="images/reporte-html.png"
+            alt="Reporte HTML de Playwright con los 80 tests aprobados"
+          />
+        </a>
+      </section>
+
+      <section>
+        <h2>Stack</h2>
+        <div class="chips">
+          <span class="chip">Playwright Test</span>
+          <span class="chip">TypeScript</span>
+          <span class="chip">Zod</span>
+          <span class="chip">Faker</span>
+          <span class="chip">ESLint</span>
+          <span class="chip">Prettier</span>
+          <span class="chip">GitHub Actions</span>
+          <span class="chip">Docker</span>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <span><strong>Daniela Inostroza Mancilla</strong> · QA Automation · Ciberseguridad</span>
+        <nav>
+          <a href="https://github.com/inostroza-Daniela">GitHub</a>
+          <a href="https://www.linkedin.com/in/daniela-inostrozam/">LinkedIn</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

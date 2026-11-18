@@ -5,6 +5,8 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white)
 ![Licencia](https://img.shields.io/badge/licencia-MIT-blue)
 
+**[Ver el sitio del proyecto, con video y último reporte](https://inostroza-daniela.github.io/api-test-automation-suite/)**
+
 Suite de pruebas automatizadas para una API REST, construida con Playwright Test y TypeScript. Cubre
 operaciones CRUD, paginación, ordenamiento, filtros, contratos de respuesta y autenticación con JWT
 sobre los endpoints `users`, `posts` y `auth` de [DummyJSON](https://dummyjson.com), y se ejecuta en
