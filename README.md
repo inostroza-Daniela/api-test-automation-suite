@@ -158,13 +158,9 @@ Por la ejecución programada, el badge puede ponerse rojo sin un commit nuevo si
 datos o corrige alguno de los defectos conocidos. Es intencional: así la suite detecta cambios en la
 API.
 
-## Licencia
+## Autora y licencia
 
-[MIT](LICENSE) © 2026 Daniela Inostroza Mancilla
+**Daniela Inostroza Mancilla** · [LinkedIn](https://www.linkedin.com/in/daniela-inostrozam/) · [GitHub](https://github.com/inostroza-Daniela)
 
-## Contacto
-
-**Daniela Inostroza Mancilla** · QA Automation · Ciberseguridad
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-daniela--inostrozam-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/daniela-inostrozam/)
-[![GitHub](https://img.shields.io/badge/GitHub-inostroza--Daniela-181717?logo=github&logoColor=white)](https://github.com/inostroza-Daniela)
+Todo el repositorio usa la licencia [MIT](LICENSE). Puedes usar, copiar, modificar y redistribuir el
+código, incluso comercialmente, conservando el aviso de copyright y la licencia.
